@@ -7,7 +7,6 @@ import {
   signInWithPopup,
   signOut,
 } from "firebase/auth";
-import { Profile } from "./Profile";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -37,9 +36,8 @@ const googleProvider = new GoogleAuthProvider();
 
 // Return user information after authentication
 export const signInWithGoogle = () => {
-  let signIn = false;
   // signInWithPopup(authentication, googleProvider) is a promise
-  signInWithPopup(authentication, googleProvider)
+  return signInWithPopup(authentication, googleProvider) 
     .then((input) => {
       // Get the display name and email of the user
       const userName = input.user.displayName;

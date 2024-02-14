@@ -1,5 +1,5 @@
 import "./Profile.css";
-import { signOutWithGoogle } from "./Firebase.js";
+import { signOutWithGoogle } from "../Firebase.js";
 
 export function Profile() {
   return (
