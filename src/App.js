@@ -1,8 +1,9 @@
-import './App.css';
-import {BrowserRouter as Router, Route, Routes, Navigate} from 'react-router-dom'
+import './Styles/App.css';
+import {BrowserRouter as Router, Route, Routes} from 'react-router-dom'
 import {Profile} from './Profile/Profile.js';
 import {Home} from './Home/Home.js';
-import {signInWithGoogle, signOutWithGoogle} from "./Firebase.js";
+//import {signInWithGoogle, signOutWithGoogle} from "./Firebase.js";
+import './Styles/index.css';
 
 function App() {
   return (
@@ -10,12 +11,8 @@ function App() {
     {
       <Router>
         <Routes>
-            <Route exact path = "/"
-              element = {<Home />}
-            >/</Route>
-            <Route exact path = "/Profile"
-              element = {<Profile />}
-            >/</Route>
+            <Route exact path = "/" element = {<Home />}>/</Route>
+            <Route exact path = "/Profile" element = {<Profile />}>/</Route>
         </Routes>
       </Router>
     }
