@@ -52,6 +52,24 @@ export const signInWithGoogle = () => {
     });
 };
 
+export const logInWithGoogle = () => {
+  // signInWithPopup(authentication, googleProvider) is a promise
+  return signInWithPopup(authentication, googleProvider) 
+    .then((input) => {
+      // Get the display name and email of the user
+      const userName = input.user.displayName;
+      const userEmail = input.user.email;
+      // Store the user information
+      localStorage.setItem("name", userName);
+      localStorage.setItem("email", userEmail);
+      // If there is an error with authentication, log it
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+
 export const signOutWithGoogle = () =>
   signOut(authentication)
     .then(() => {
