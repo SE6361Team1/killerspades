@@ -7,6 +7,7 @@ import {
   signInWithPopup,
   signOut,
 } from "firebase/auth";
+import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore/lite';
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -24,6 +25,7 @@ const firebaseConfig = {
 // const app represents our Firebase connection
 // Below represents who is currently authenticated in Firebase
 const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 const analytics = getAnalytics(app);
 // Export authentication is to be able to import in different files
 export const authentication = getAuth(app);
@@ -81,3 +83,43 @@ export const signOutWithGoogle = () =>
       // An error happened.
       console.log(error);
     });
+
+export const getDocument = (collectionName, documentId) => {
+  const docRef = doc(db, collectionName, documentId);
+  return getDoc(docRef).then((docSnap) => {
+    // Check if the document exists
+    if (docSnap.exists()) {
+      // Get the document data
+      const docData = docSnap.data();
+      // Return the data
+      return docData;
+    } else {
+      // Throw an error if the document does not exist
+      throw new Error("No such document!");
+    }
+  }).catch((error) => {
+    // Throw any other errors
+    throw error;
+  });
+};
+
+export function storeDataFromPromise (promise, field){
+  return promise.then((docData) => {
+    // Get the name field from the document data
+    const data = docData[field];
+    // Display the name as a string
+    console.log(typeof(promise))
+    console.log("The name is " + typeof(data));
+    localStorage.setItem("dbStorage" + field, data);
+    return data
+  })
+  .catch((error) => {
+    // Handle any errors
+    console.error(error);
+  });
+}
+
+export function storeAndRetrieveData (promise, field){
+  storeDataFromPromise(promise, field)
+  return localStorage.getItem("dbStorage" + field)
+}

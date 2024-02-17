@@ -1,7 +1,8 @@
 import "./Profile.css";
 import { signOutWithGoogle } from "../Firebase.js";
 import { useNavigate } from "react-router-dom";
-
+import { getDocument } from "../Firebase.js";
+import { storeAndRetrieveData } from "../Firebase.js";
 export function Profile() {
   const navigate = useNavigate();
   function handleLogOut () {
@@ -14,7 +15,7 @@ export function Profile() {
         console.error(error);
       });
   }
-
+  
   return (
     <>
       <div className="center">
@@ -27,6 +28,10 @@ export function Profile() {
           <p>
             <strong>Email: </strong>
             {localStorage.getItem("email")}
+          </p>
+          <p>
+            <strong>Database Retrieval: </strong>
+            {storeAndRetrieveData(getDocument("Users", "l.c.dane@gmail.com"), "TestString")}
           </p>
           <h1 className="py-4">
             <button  className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" onClick={handleLogOut}>Sign Out with Google</button>
