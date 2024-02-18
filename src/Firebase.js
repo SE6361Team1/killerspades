@@ -69,8 +69,9 @@ export const logInWithGoogle = () => {
       // Store the user information
       localStorage.setItem("name", userName);
       localStorage.setItem("email", userEmail);
-      console.log("I am here")
-      if(!doesUserExist(userEmail)){
+      const haveUser = !doesUserExist(userEmail);
+      console.log("The value of haveUser is " + haveUser)
+      if(!haveUser){
         addDoc(collection(db,"Users"), {name: userName, email: userEmail, TestString: "hello"})
         console.log("user added to db")
       }
@@ -118,9 +119,9 @@ export function storeDataFromPromise (promise, field){
     // Get the name field from the document data
     const data = docData[field];
     // Display the name as a string
-    console.log(typeof(promise))
-    console.log("The type of name is " + typeof(data));
-    console.log("the name is " + data)
+    //console.log(typeof(promise))
+    //console.log("The type of name is " + typeof(data));
+    //console.log("the name is " + data)
     localStorage.setItem("dbStorage" + field, data);
     return data
   })
@@ -151,7 +152,7 @@ export function storeFieldIntoDocument (docRef, fieldName, fieldData){
 export function doesUserExist(email){
   const usersRef = collection(db, "Users");
   const emailQuery = where("email", "==", email);
-  console.log("Inside the doesuser exist function")
+  //console.log("Inside the doesuser exist function")
   getDocs(query(usersRef, emailQuery)).then((querySnapshot) =>{
     if(querySnapshot.empty){
       console.log("user does not exist")
