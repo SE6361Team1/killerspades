@@ -1,5 +1,6 @@
 import { signInWithGoogle, logInWithGoogle } from "../Firebase.js";
 import { useNavigate } from "react-router-dom";
+//import backgroundI from '../Assets/bgImage.png';
 
 export function Home() {
   const navigate = useNavigate();
@@ -28,12 +29,15 @@ export function Home() {
   }
   
   return (
-    <div className="Home">
-      <h1  className="text-3xl font-bold px-3 py-4" >Welcome to Killer Spades!</h1>
-      <h1 className="px-3 py-2 space-x-3">
-        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleSignUp}>Register</button>
-        <button className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" onClick={handleLogIn}>Sign In with Google</button>
-      </h1>
+    <div className="bg-backgroundI w-screen h-screen bg-center bg-cover">
+      <div className="flex flex-col items-center justify-center h-screen">
+        <h1  className="font-bold px-3 py-4 font-mono text-[128px]">KILLER SPADES</h1>
+        <h1 className="space-x-[710px]">
+          <button className="bg-slate-300 hover:bg-slate-400 text-black font-bold font-mono text-[28px] py-2 px-4 rounded-lg" onClick={handleSignUp}>REGISTER</button>
+          <button className="bg-slate-300 hover:bg-slate-400 text-black font-bold font-mono text-[28px] py-2 px-4 rounded-lg" onClick={handleLogIn}>LOGIN</button>
+        </h1>
+      </div>
+      
     </div>
   );
 }
