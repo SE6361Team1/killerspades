@@ -1,5 +1,5 @@
 import "./Profile.css";
-import { signOutWithGoogle } from "../Firebase.js";
+import { getDocFromEmailName, signOutWithGoogle, storeDataFromDoc } from "../Firebase.js";
 import { useNavigate } from "react-router-dom";
 import { getDocument } from "../Firebase.js";
 import { storeAndRetrieveData } from "../Firebase.js";
@@ -15,7 +15,20 @@ export function Profile() {
         console.error(error);
       });
   }
-  
+  function goToGames() {
+    navigate("/Games")
+  }
+  function getTestString(){
+    const doc = getDocFromEmailName(localStorage.getItem("email"))
+    console.log("I am printing the doc now")
+    console.log(doc)
+    const TestString = storeAndRetrieveData(doc, "TestString")
+    console.log(TestString)
+    return TestString
+    
+    //storeDataFromDoc(doc, "TestString")
+    //return localStorage.getItem("dbStorage" + "TestString")
+  }
   return (
     <>
       <div className="center">
@@ -31,10 +44,13 @@ export function Profile() {
           </p>
           <p>
             <strong>Database Retrieval: </strong>
-            {storeAndRetrieveData(getDocument("Users", "l.c.dane@gmail.com"), "TestString")}
+            {getTestString()}
           </p>
           <h1 className="py-4">
             <button  className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" onClick={handleLogOut}>Sign Out with Google</button>
+          </h1>
+          <h1 className="py-5">
+            <button  className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" onClick={goToGames}>Go to Games</button>
           </h1>
           
         </div>

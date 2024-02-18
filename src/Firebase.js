@@ -7,8 +7,8 @@ import {
   signInWithPopup,
   signOut,
 } from "firebase/auth";
-import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore/lite';
-
+import { getFirestore, collection, getDocs, doc, getDoc, setDoc, where, addDoc } from 'firebase/firestore/lite';
+import {query} from "firebase/firestore"
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -47,6 +47,11 @@ export const signInWithGoogle = () => {
       // Store the user information
       localStorage.setItem("name", userName);
       localStorage.setItem("email", userEmail);
+      console.log("I am here")
+      if(!doesUserExist(userEmail)){
+        addDoc(collection(db,"Users"), {name: userName, email: userEmail, TestString: "hello"})
+        console.log("user added to db")
+      }
       // If there is an error with authentication, log it
     })
     .catch((error) => {
@@ -64,6 +69,11 @@ export const logInWithGoogle = () => {
       // Store the user information
       localStorage.setItem("name", userName);
       localStorage.setItem("email", userEmail);
+      console.log("I am here")
+      if(!doesUserExist(userEmail)){
+        addDoc(collection(db,"Users"), {name: userName, email: userEmail, TestString: "hello"})
+        console.log("user added to db")
+      }
       // If there is an error with authentication, log it
     })
     .catch((error) => {
@@ -109,7 +119,8 @@ export function storeDataFromPromise (promise, field){
     const data = docData[field];
     // Display the name as a string
     console.log(typeof(promise))
-    console.log("The name is " + typeof(data));
+    console.log("The type of name is " + typeof(data));
+    console.log("the name is " + data)
     localStorage.setItem("dbStorage" + field, data);
     return data
   })
@@ -118,8 +129,51 @@ export function storeDataFromPromise (promise, field){
     console.error(error);
   });
 }
+export function storeDataFromDoc (doc, field){
+  // Get the name field from the document data
+  const data = doc[field];
+  //console.log("The data is " + data)
+  // Display the name as a string
+  //console.log("The name is " + typeof(data));
+  localStorage.setItem("dbStorage" + field, data);
+  return data
+}
 
 export function storeAndRetrieveData (promise, field){
   storeDataFromPromise(promise, field)
   return localStorage.getItem("dbStorage" + field)
+}
+
+export function storeFieldIntoDocument (docRef, fieldName, fieldData){
+  setDoc(docRef, { fieldName : fieldData})
+}
+
+export function doesUserExist(email){
+  const usersRef = collection(db, "Users");
+  const emailQuery = where("email", "==", email);
+  console.log("Inside the doesuser exist function")
+  getDocs(query(usersRef, emailQuery)).then((querySnapshot) =>{
+    if(querySnapshot.empty){
+      console.log("user does not exist")
+      return false;
+    }
+    return true;
+  })
+
+}
+
+export function getDocFromEmailName(email){
+  //console.log("Getting the doc")
+  const usersRef = collection(db, "Users");
+  const emailQuery = where("email", "==", email);
+  return getDocs(query(usersRef, emailQuery)).then((querySnapshot) =>{
+    if(querySnapshot.empty){
+      return false;
+    }
+    //console.log("returning the data")
+    const firstDoc = querySnapshot.docs[0]; // get the first element of the array
+    const firstDocData = firstDoc.data(); // get the data of the document
+    return firstDocData;
+  })
+
 }
