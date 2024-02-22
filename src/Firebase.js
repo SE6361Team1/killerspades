@@ -47,11 +47,17 @@ export const signInWithGoogle = () => {
       // Store the user information
       localStorage.setItem("name", userName);
       localStorage.setItem("email", userEmail);
-      console.log("I am here")
-      if(!doesUserExist(userEmail)){
+      
+      const userPromise = Promise.resolve(doesUserExist(userEmail));
+      console.log("And this is the output from doesUserExist: ")
+      console.log(userPromise)
+      userPromise.then((userExist) =>{
+      console.log("This is the output from opening the promise: " + userExist)
+        if(!userExist){
         addDoc(collection(db,"Users"), {name: userName, email: userEmail, TestString: "hello"})
         console.log("user added to db")
       }
+    })
       // If there is an error with authentication, log it
     })
     .catch((error) => {
@@ -60,6 +66,8 @@ export const signInWithGoogle = () => {
 };
 
 export const logInWithGoogle = () => {
+  return signInWithGoogle();
+  /*
   // signInWithPopup(authentication, googleProvider) is a promise
   return signInWithPopup(authentication, googleProvider) 
     .then((input) => {
@@ -80,6 +88,7 @@ export const logInWithGoogle = () => {
     .catch((error) => {
       console.log(error);
     });
+    */
 };
 
 
@@ -122,10 +131,10 @@ export async function storeDataFromPromise (promise, field){
     //console.log(typeof(promise))
     //console.log("The type of name is " + typeof(data));
     //console.log("the name is " + data)
-    console.log("This is the data from the database: " + data)
+    //console.log("This is the data from the database: " + data)
     localStorage.setItem("dbStorage" + field, data);
-    console.log("I am storing it in dbStorage" + field)
-    console.log("One final data test because js is evil " + data)
+    //console.log("I am storing it in dbStorage" + field)
+    //console.log("One final data test because js is evil " + data)
     return data
   })
   .catch((error) => {
@@ -152,7 +161,7 @@ export function storeFieldIntoDocument (docRef, fieldName, fieldData){
   setDoc(docRef, { fieldName : fieldData})
 }
 
-export function doesUserExist(email){
+export async function doesUserExist(email){
   /*
   const usersRef = collection(db, "Users");
   const emailQuery = where("email", "==", email);
@@ -165,12 +174,18 @@ export function doesUserExist(email){
     return true;
   })
   */
-  if (getDocFromEmailName(email) == false) {
+ const  retrievalPromise = getDocFromEmailName(email)
+ console.log("This is what I get getting the users: ")
+ console.log(retrievalPromise)
+  return retrievalPromise.then((retrievalVal) =>{
+  console.log(retrievalVal)
+  if (retrievalVal == false) {
     return false;
   }
   return true;
 
-}
+});
+};
 
 export async function getDocFromEmailName(entryEmail){
   //console.log("Getting the doc")
@@ -196,21 +211,21 @@ export async function getDocFromEmailName(entryEmail){
   */
   
   const usersRef = collection(db, "Users");
-  console.log("this should be the users collection reference: " + usersRef.path)
-  console.log("This is the input email: " + entryEmail)
+  //console.log("this should be the users collection reference: " + usersRef.path)
+  //console.log("This is the input email: " + entryEmail)
   const emailQuery = where("email", "==", entryEmail);
   return getDocs(query(usersRef, emailQuery)).then((querySnapshot) =>{
-    console.log("Snapshot: " + querySnapshot.docs)
+    console.log("Snapshot: " + querySnapshot.size)
     if(querySnapshot.empty){
       return false;
     }
-    //console.log("returning the data")
+    //console.log("the query snapshot was NOT empty")
     for (let i = 0; i <querySnapshot.size; i++){
       const emailVar = querySnapshot.docs[i].data()["email"];
       console.log("I am at index " + i + " and this is my email: " + emailVar)
       if (emailVar == entryEmail){
         const firstDoc = querySnapshot.docs[i]; // get the  element of the array
-        console.log("These are the query results: " + querySnapshot.docs)
+        //console.log("These are the query results: " + querySnapshot.docs)
         const firstDocData = firstDoc.data(); // get the data of the document
         console.log("This is the data from the firstDoc: " + firstDocData["email"])
         return Promise.resolve(firstDocData)

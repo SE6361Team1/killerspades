@@ -15,6 +15,7 @@ export function GamesList() {
         const player1Email = document.getElementById('player1Email').value;
         const player2Email = document.getElementById('player2Email').value;
         const player3Email = document.getElementById('player3Email').value;
+        const gameName = document.getElementById('gameName').value;
 
         if(date && time && player1Email && player2Email && player3Email) {
             const playerEmails = [player1Email, player2Email, player3Email];
@@ -31,11 +32,11 @@ export function GamesList() {
 
     return (
     <>
-    <head>
+    <p>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Game Registration</title>
-    </head>
+        <strong>Game Registration</strong>
+    </p>
   
 
     <div id="games"></div>
@@ -48,6 +49,7 @@ export function GamesList() {
         <input type="email" id="player1Email" placeholder ="Player 1 Email" /><br />
         <input type='email' id='player2Email' placeholder ='Player 2 Email' /><br />
         <input type='email' id='player3Email' placeholder ='Player 3 Email' /><br /> 
+        <input type='text' id='gameName' placeholder ='Game Name' /><br /> 
         <h1 className="py-5">
             <button  className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" onClick={registerGame}>Register Game</button>
         </h1> 
