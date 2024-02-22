@@ -162,53 +162,19 @@ export function storeFieldIntoDocument (docRef, fieldName, fieldData){
 }
 
 export async function doesUserExist(email){
-  /*
-  const usersRef = collection(db, "Users");
-  const emailQuery = where("email", "==", email);
-  //console.log("Inside the doesuser exist function")
-  getDocs(query(usersRef, emailQuery)).then((querySnapshot) =>{
-    if(querySnapshot.empty){
-      console.log("user does not exist")
+  const  retrievalPromise = getDocFromEmailName(email)
+  //console.log("This is what I get getting the users: ")
+  //console.log(retrievalPromise)
+  return retrievalPromise.then((retrievalVal) =>{
+    console.log(retrievalVal)
+    if (retrievalVal == false) {
       return false;
     }
     return true;
-  })
-  */
- const  retrievalPromise = getDocFromEmailName(email)
- console.log("This is what I get getting the users: ")
- console.log(retrievalPromise)
-  return retrievalPromise.then((retrievalVal) =>{
-  console.log(retrievalVal)
-  if (retrievalVal == false) {
-    return false;
-  }
-  return true;
-
-});
+  });
 };
 
 export async function getDocFromEmailName(entryEmail){
-  //console.log("Getting the doc")
-  
-  /*
-  const usersRef = collection(db, "Users");
-  console.log("this should be the users collection reference: " + usersRef.path)
-  console.log("This is the input email: " + entryEmail)
-  const emailQuery = where("email", "==", entryEmail);
-  return getDocs(query(usersRef, emailQuery)).then((querySnapshot) =>{
-    console.log("Snapshot: " + querySnapshot.docs)
-    if(querySnapshot.empty){
-      return false;
-    }
-    //console.log("returning the data")
-    
-    const firstDoc = querySnapshot.docs[0]; // get the first element of the array
-    console.log("These are the query results: " + querySnapshot.docs)
-    const firstDocData = firstDoc.data(); // get the data of the document
-    console.log("This is the data from the firstDoc: " + firstDocData["email"])
-    return Promise.resolve(firstDocData);
-  })
-  */
   
   const usersRef = collection(db, "Users");
   //console.log("this should be the users collection reference: " + usersRef.path)
@@ -234,26 +200,46 @@ export async function getDocFromEmailName(entryEmail){
     return false
   })
 
-  
 
-  /*
-  const usersRef = collection(db, "Users");
-
-// Create a query to find the document with the matching email
-const queryVar = query(usersRef, where("email", "==", entryEmail));
-
-// Get the query snapshot
-const querySnapshot = getDocs(query);
-
-// If the query snapshot is not empty, map each document to its ID and return the array
-if (!querySnapshot.empty) {
-  const docIds = querySnapshot.docs.map(doc => doc.id);
-  return docIds[0];
 }
 
-// Otherwise, return false
-else {
+export async function getAllEntriesFromCollection(collectionName){
+  const collRef = collection(db, collectionName);
+  console.log(collRef)
+  return getDocs(query(collRef, where("defaultDoesntMatter", "==", "")))
+}
+
+export async function getEntriesMatchingField(querySnapshot, fieldName, desiredData){
+  const docArray =[];
+  console.log("Size of snapshot: " + querySnapshot.size)
+  console.log("fieldName test: " + fieldName)
+  // Use a for await...of loop to iterate through the query snapshot
+  for await (const doc of querySnapshot.docs){
+    const docData = doc.data();
+    console.log(docData)
+    const fieldFilledVar = Promise.resolve(isFieldFilledInDoc(docData, fieldName, desiredData))
+    console.log("This is the field filled in var: " )
+    console.log(fieldFilledVar)
+    fieldFilledVar.then((isRight) => {
+      console.log("Am I right? On i = " + "idk" + ": + " + isRight)
+      if(isRight){
+        docArray.push(docData);
+      }
+    })
+  }
+  console.log(docArray)
+  return docArray;
+}
+
+
+export async function isFieldFilledInDoc(docData, fieldName, desiredData){
+  console.log("Field Name: " + fieldName 
+  + ", data there: " + docData[fieldName] 
+  + ", desired data: " + desiredData)
+  if(docData[fieldName] == desiredData) {
+    console.log("I am right!!")
+    return true;
+  }
+  console.log("I am wrong :(")
   return false;
-}
-*/
 }

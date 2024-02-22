@@ -2,6 +2,9 @@ import { useNavigate } from "react-router-dom";
 import { getDocument } from "../Firebase.js";
 import { storeAndRetrieveData } from "../Firebase.js";
 import { storeFieldIntoDocument } from "../Firebase.js";
+import { getAllEntriesFromCollection } from "../Firebase.js";
+import { getEntriesMatchingField } from "../Firebase.js";
+import { isFieldFilledInDoc } from "../Firebase.js";
 export function GamesList() {
     const navigate = useNavigate();
     function goBack () {
@@ -30,6 +33,40 @@ export function GamesList() {
         //storeFieldIntoDocument("Games", )
     }
 
+    function displayGames(){
+        console.log(getAllGames(localStorage.getItem("email")))
+    }
+
+    function getAllGames(email){
+        //The query containing every entry in the Games collection
+        const gamesQueryPromise = getAllEntriesFromCollection("Games");
+        //Will be a 2d array containing every game with the matching player email
+        return gamesQueryPromise.then((gamesQuery) => {
+            console.log(gamesQuery)
+            const gamesArrayArray = [];
+            for (let i = 1; i < 5; i ++){
+                gamesArrayArray.push(getEntriesMatchingField(gamesQuery, "player" + i, email))
+                console.log("Now I will print the games Array Array: ")
+                console.log(gamesArrayArray)
+            }
+            return combineArrays(gamesArrayArray)
+        })
+        
+    }
+
+    //a method to combine the arrays but only the unique ones
+    function combineArrays(gamesCollection){
+        //we make a set (a data type that doesnt accept duplicates)
+        const gameSet = new Set();
+        
+        for (let i = 0; i < gamesCollection.size; i++){
+            for(let j = 0; j< gamesCollection[i].size; j++){
+                gameSet.add(gamesCollection[i][j]);
+            }
+        }
+        return gameSet;
+    }
+
     return (
     <>
     <p>
@@ -53,11 +90,14 @@ export function GamesList() {
         <h1 className="py-5">
             <button  className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" onClick={registerGame}>Register Game</button>
         </h1> 
+        
+    </form>
+    <h1 className="py-7">
+            <button  className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" onClick={displayGames}>Click me to get games!</button>
+        </h1> 
         <h1 className="py-6">
             <button  className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" onClick={goBack}>Go Back</button>
-        </h1> 
-    </form>
-    
+    </h1> 
     </>
     )
 
