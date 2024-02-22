@@ -114,7 +114,7 @@ export const getDocument = (collectionName, documentId) => {
   });
 };
 
-export function storeDataFromPromise (promise, field){
+export async function storeDataFromPromise (promise, field){
   return promise.then((docData) => {
     // Get the name field from the document data
     const data = docData[field];
@@ -122,7 +122,10 @@ export function storeDataFromPromise (promise, field){
     //console.log(typeof(promise))
     //console.log("The type of name is " + typeof(data));
     //console.log("the name is " + data)
+    console.log("This is the data from the database: " + data)
     localStorage.setItem("dbStorage" + field, data);
+    console.log("I am storing it in dbStorage" + field)
+    console.log("One final data test because js is evil " + data)
     return data
   })
   .catch((error) => {
@@ -141,7 +144,7 @@ export function storeDataFromDoc (doc, field){
 }
 
 export function storeAndRetrieveData (promise, field){
-  storeDataFromPromise(promise, field)
+  Promise.resolve(storeDataFromPromise(promise, field))
   return localStorage.getItem("dbStorage" + field)
 }
 
@@ -150,6 +153,7 @@ export function storeFieldIntoDocument (docRef, fieldName, fieldData){
 }
 
 export function doesUserExist(email){
+  /*
   const usersRef = collection(db, "Users");
   const emailQuery = where("email", "==", email);
   //console.log("Inside the doesuser exist function")
@@ -160,21 +164,81 @@ export function doesUserExist(email){
     }
     return true;
   })
+  */
+  if (getDocFromEmailName(email) == false) {
+    return false;
+  }
+  return true;
 
 }
 
-export function getDocFromEmailName(email){
+export async function getDocFromEmailName(entryEmail){
   //console.log("Getting the doc")
+  
+  /*
   const usersRef = collection(db, "Users");
-  const emailQuery = where("email", "==", email);
+  console.log("this should be the users collection reference: " + usersRef.path)
+  console.log("This is the input email: " + entryEmail)
+  const emailQuery = where("email", "==", entryEmail);
   return getDocs(query(usersRef, emailQuery)).then((querySnapshot) =>{
+    console.log("Snapshot: " + querySnapshot.docs)
     if(querySnapshot.empty){
       return false;
     }
     //console.log("returning the data")
+    
     const firstDoc = querySnapshot.docs[0]; // get the first element of the array
+    console.log("These are the query results: " + querySnapshot.docs)
     const firstDocData = firstDoc.data(); // get the data of the document
-    return firstDocData;
+    console.log("This is the data from the firstDoc: " + firstDocData["email"])
+    return Promise.resolve(firstDocData);
+  })
+  */
+  
+  const usersRef = collection(db, "Users");
+  console.log("this should be the users collection reference: " + usersRef.path)
+  console.log("This is the input email: " + entryEmail)
+  const emailQuery = where("email", "==", entryEmail);
+  return getDocs(query(usersRef, emailQuery)).then((querySnapshot) =>{
+    console.log("Snapshot: " + querySnapshot.docs)
+    if(querySnapshot.empty){
+      return false;
+    }
+    //console.log("returning the data")
+    for (let i = 0; i <querySnapshot.size; i++){
+      const emailVar = querySnapshot.docs[i].data()["email"];
+      console.log("I am at index " + i + " and this is my email: " + emailVar)
+      if (emailVar == entryEmail){
+        const firstDoc = querySnapshot.docs[i]; // get the  element of the array
+        console.log("These are the query results: " + querySnapshot.docs)
+        const firstDocData = firstDoc.data(); // get the data of the document
+        console.log("This is the data from the firstDoc: " + firstDocData["email"])
+        return Promise.resolve(firstDocData)
+      }
+    }
+    return false
   })
 
+  
+
+  /*
+  const usersRef = collection(db, "Users");
+
+// Create a query to find the document with the matching email
+const queryVar = query(usersRef, where("email", "==", entryEmail));
+
+// Get the query snapshot
+const querySnapshot = getDocs(query);
+
+// If the query snapshot is not empty, map each document to its ID and return the array
+if (!querySnapshot.empty) {
+  const docIds = querySnapshot.docs.map(doc => doc.id);
+  return docIds[0];
+}
+
+// Otherwise, return false
+else {
+  return false;
+}
+*/
 }

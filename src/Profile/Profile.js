@@ -19,7 +19,9 @@ export function Profile() {
     navigate("/Games")
   }
   function getTestString(){
-    const doc = getDocFromEmailName(localStorage.getItem("email"))
+    const email = localStorage.getItem("email")
+    console.log("Stored email: " + email)
+    const doc = Promise.resolve(getDocFromEmailName(email))
     console.log("I am printing the doc now")
     console.log(doc)
     const TestString = storeAndRetrieveData(doc, "TestString")
