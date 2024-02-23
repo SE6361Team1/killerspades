@@ -6,6 +6,7 @@ import { storeFieldIntoDocument } from "../Firebase.js";
 import { getAllEntriesFromCollection } from "../Firebase.js";
 import { getEntriesMatchingField } from "../Firebase.js";
 import { isFieldFilledInDoc } from "../Firebase.js";
+import { makeDoc } from "../Firebase.js";
 export function GamesList() {
     const navigate = useNavigate();
     function goBack () {
@@ -16,21 +17,25 @@ export function GamesList() {
     function registerGame() {
         const date = document.getElementById('date').value;
         const time = document.getElementById('time').value;
-        const player1Email = document.getElementById('player1Email').value;
         const player2Email = document.getElementById('player2Email').value;
         const player3Email = document.getElementById('player3Email').value;
+        const player4Email = document.getElementById('player4Email').value;
         const gameName = document.getElementById('gameName').value;
 
-        if(date && time && player1Email && player2Email && player3Email) {
-            const playerEmails = [player1Email, player2Email, player3Email];
-
+        if(date && time && player2Email && player3Email && player4Email && gameName) {
+            const playerEmails = [player2Email, player3Email, player4Email];
+            storeGameIntoDB(date, time, playerEmails, gameName)
             console.log("Game registered!");
         } else {
             alert("Please fill all fields before registering.");
         }
     }
 
-    function storeGameIntoDB(date, time, playerEmails){
+    function storeGameIntoDB(date, time, playerEmails, gameName){
+        console.log(date)
+        console.log(time)
+        console.log(playerEmails)
+        console.log(gameName)
         //storeFieldIntoDocument("Games", )
     }
 
@@ -91,7 +96,7 @@ export function GamesList() {
         for (let i = 0; i < gameArray.length; i ++){
             const game = gameArray[i];
             const gameName = game.gameName;
-            const gameDate = game.date;
+            const gameDate = convertToDateTime(game.date.seconds, game.date.nanoseconds);
             const player1 = game.player1;
             const player2 = game.player2;
             const player3 = game.player3;
@@ -113,6 +118,17 @@ export function GamesList() {
         return "<tr><td>Game Name</td><td>Game Date</td><td>Game Players</td><td>Join</td></tr>"
     }
 
+    function convertToDateTime(seconds, nanoseconds) {
+        // Create a new Date object using the seconds (converted to milliseconds)
+        const date = new Date(seconds * 1000);
+      
+        // Add the nanoseconds (converted to milliseconds)
+        const milliseconds = nanoseconds / 1000000;
+        date.setMilliseconds(date.getMilliseconds() + milliseconds);
+      
+        return date;
+      }
+
     return (
     <>
     <p>
@@ -129,9 +145,9 @@ export function GamesList() {
     <form id="gameForm">
         <input type="date" id="date" placeholder="Date Inputted from Calendar" /><br />
         <input type="time" id="time" placeholder="Desired Time" /><br />
-        <input type="email" id="player1Email" placeholder ="Player 1 Email" /><br />
-        <input type='email' id='player2Email' placeholder ='Player 2 Email' /><br />
-        <input type='email' id='player3Email' placeholder ='Player 3 Email' /><br /> 
+        <input type="email" id="player2Email" placeholder ="Player 2 Email" /><br />
+        <input type='email' id='player3Email' placeholder ='Player 3 Email' /><br />
+        <input type='email' id='player4Email' placeholder ='Player 4 Email' /><br /> 
         <input type='text' id='gameName' placeholder ='Game Name' /><br /> 
         <h1 className="py-5">
             <button  className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" onClick={registerGame}>Register Game</button>
