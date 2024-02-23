@@ -1,3 +1,4 @@
+import "./Games.css";
 import { useNavigate } from "react-router-dom";
 import { getDocument } from "../Firebase.js";
 import { storeAndRetrieveData } from "../Firebase.js";
@@ -33,9 +34,25 @@ export function GamesList() {
         //storeFieldIntoDocument("Games", )
     }
 
-    function displayGames(){
-        console.log(getAllGames(localStorage.getItem("email")))
+    /*function displayGames(){
+        const allGamesPromise = getAllGames(localStorage.getItem("email"))
+        return allGamesPromise.then((allGames) => {
+            console.log(allGames);
+            const tableHTML = makeTable(allGames)
+            console.log(tableHTML)
+            return tableHTML
+        })
+        
     }
+    */
+    function displayGames() {
+        getAllGames(localStorage.getItem("email")).then((allGames) => {
+            const tableHTML = makeTable(allGames);
+            console.log("This is the tableHTML")
+            document.getElementById('myTable').innerHTML = tableHTML;
+        });
+    }
+    
 
     async function getAllGames(email){
         const gamesQuery = await getAllEntriesFromCollection("Games");
@@ -67,6 +84,35 @@ export function GamesList() {
         return gameSet;
     }
 
+    function makeTable(setOfGames){
+        const gameArray = Array.from(setOfGames);
+        let table = "<table>";
+        table += "\n" + makeHeader() + "\n";
+        for (let i = 0; i < gameArray.length; i ++){
+            const game = gameArray[i];
+            const gameName = game.gameName;
+            const gameDate = game.date;
+            const player1 = game.player1;
+            const player2 = game.player2;
+            const player3 = game.player3;
+            const player4 = game.player4;
+            table += "<tr>\n"
+            table += "<td>" + gameName + "</td>"
+            table += "<td>" + gameDate + "</td>"
+            table += ("<td>" + player1 + ", " 
+            + player2 + ", " 
+            + player3 + ", " 
+            + player4 + "</td>");
+            table += "<td></td>"
+            table += "</tr>\n"
+        }
+        table += "</table>"
+        return table
+    }
+    function makeHeader(){
+        return "<tr><td>Game Name</td><td>Game Date</td><td>Game Players</td><td>Join</td></tr>"
+    }
+
     return (
     <>
     <p>
@@ -94,8 +140,9 @@ export function GamesList() {
     </form>
     <h1 className="py-7">
             <button  className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" onClick={displayGames}>Click me to get games!</button>
-        </h1> 
-        <h1 className="py-6">
+    </h1> 
+    <div id="myTable"></div>
+    <h1 className="py-6">
             <button  className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" onClick={goBack}>Go Back</button>
     </h1> 
     </>
