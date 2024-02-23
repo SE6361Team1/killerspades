@@ -233,3 +233,26 @@ export async function isFieldFilledInDoc(docData, fieldName, desiredData){
   //console.log("I am wrong :(")
   return false;
 }
+
+export async function makeDoc(collectionName, fieldNames, fields) {
+  // Ensure the arrays have the same length
+  if (fieldNames.length !== fields.length) {
+    throw new Error('The length of fieldNames and fields arrays must be the same.');
+  }
+
+  // Create an object to hold the field-value pairs
+  const docData = {};
+  for (let i = 0; i < fieldNames.length; i++) {
+    docData[fieldNames[i]] = fields[i];
+  }
+
+  try {
+    // Reference to the collection
+    const docRef = collection(db, collectionName);
+    // Add a new document with the object data
+    const docSnapshot = await addDoc(docRef, docData);
+    console.log('Document written with ID: ', docSnapshot.id);
+  } catch (e) {
+    console.error('Error adding document: ', e);
+  }
+}
