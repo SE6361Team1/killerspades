@@ -37,33 +37,33 @@ export function GamesList() {
         console.log(getAllGames(localStorage.getItem("email")))
     }
 
-    function getAllGames(email){
-        //The query containing every entry in the Games collection
-        const gamesQueryPromise = getAllEntriesFromCollection("Games");
-        //Will be a 2d array containing every game with the matching player email
-        return gamesQueryPromise.then((gamesQuery) => {
-            console.log(gamesQuery)
-            const gamesArrayArray = [];
-            for (let i = 1; i < 5; i ++){
-                gamesArrayArray.push(getEntriesMatchingField(gamesQuery, "player" + i, email))
-                console.log("Now I will print the games Array Array: ")
-                console.log(gamesArrayArray)
-            }
-            return combineArrays(gamesArrayArray)
-        })
-        
+    async function getAllGames(email){
+        const gamesQuery = await getAllEntriesFromCollection("Games");
+        const gamesArrayArray = await Promise.all(
+            Array.from({ length: 4 }, (_, i) => 
+                getEntriesMatchingField(gamesQuery, "player" + (i + 1), email)
+            )
+        );
+        return combineArrays(gamesArrayArray);
     }
 
     //a method to combine the arrays but only the unique ones
     function combineArrays(gamesCollection){
         //we make a set (a data type that doesnt accept duplicates)
         const gameSet = new Set();
-        
-        for (let i = 0; i < gamesCollection.size; i++){
-            for(let j = 0; j< gamesCollection[i].size; j++){
+        console.log("I am inside the combineArrays Method")
+        console.log(gamesCollection)
+        console.log(gamesCollection.length)
+        for (let i = 0; i < gamesCollection.length; i++){
+            const row = gamesCollection[i];
+            console.log("This is the row")
+            console.log(row)
+            for(let j = 0; j< gamesCollection[i].length; j++){
                 gameSet.add(gamesCollection[i][j]);
             }
         }
+        console.log("Set of all the games: ")
+        console.log(gameSet)
         return gameSet;
     }
 

@@ -166,7 +166,7 @@ export async function doesUserExist(email){
   //console.log("This is what I get getting the users: ")
   //console.log(retrievalPromise)
   return retrievalPromise.then((retrievalVal) =>{
-    console.log(retrievalVal)
+    //console.log(retrievalVal)
     if (retrievalVal == false) {
       return false;
     }
@@ -181,19 +181,19 @@ export async function getDocFromEmailName(entryEmail){
   //console.log("This is the input email: " + entryEmail)
   const emailQuery = where("email", "==", entryEmail);
   return getDocs(query(usersRef, emailQuery)).then((querySnapshot) =>{
-    console.log("Snapshot: " + querySnapshot.size)
+    //console.log("Snapshot: " + querySnapshot.size)
     if(querySnapshot.empty){
       return false;
     }
     //console.log("the query snapshot was NOT empty")
     for (let i = 0; i <querySnapshot.size; i++){
       const emailVar = querySnapshot.docs[i].data()["email"];
-      console.log("I am at index " + i + " and this is my email: " + emailVar)
+      //console.log("I am at index " + i + " and this is my email: " + emailVar)
       if (emailVar == entryEmail){
         const firstDoc = querySnapshot.docs[i]; // get the  element of the array
         //console.log("These are the query results: " + querySnapshot.docs)
         const firstDocData = firstDoc.data(); // get the data of the document
-        console.log("This is the data from the firstDoc: " + firstDocData["email"])
+        //console.log("This is the data from the firstDoc: " + firstDocData["email"])
         return Promise.resolve(firstDocData)
       }
     }
@@ -205,29 +205,19 @@ export async function getDocFromEmailName(entryEmail){
 
 export async function getAllEntriesFromCollection(collectionName){
   const collRef = collection(db, collectionName);
-  console.log(collRef)
+  //console.log(collRef)
   return getDocs(query(collRef, where("defaultDoesntMatter", "==", "")))
 }
 
 export async function getEntriesMatchingField(querySnapshot, fieldName, desiredData){
-  const docArray =[];
-  console.log("Size of snapshot: " + querySnapshot.size)
-  console.log("fieldName test: " + fieldName)
-  // Use a for await...of loop to iterate through the query snapshot
-  for await (const doc of querySnapshot.docs){
-    const docData = doc.data();
-    console.log(docData)
-    const fieldFilledVar = Promise.resolve(isFieldFilledInDoc(docData, fieldName, desiredData))
-    console.log("This is the field filled in var: " )
-    console.log(fieldFilledVar)
-    fieldFilledVar.then((isRight) => {
-      console.log("Am I right? On i = " + "idk" + ": + " + isRight)
+  const docArray = [];
+  for (const doc of querySnapshot.docs){
+      const docData = doc.data();
+      const isRight = await isFieldFilledInDoc(docData, fieldName, desiredData);
       if(isRight){
-        docArray.push(docData);
+          docArray.push(docData);
       }
-    })
   }
-  console.log(docArray)
   return docArray;
 }
 
@@ -237,9 +227,9 @@ export async function isFieldFilledInDoc(docData, fieldName, desiredData){
   + ", data there: " + docData[fieldName] 
   + ", desired data: " + desiredData)
   if(docData[fieldName] == desiredData) {
-    console.log("I am right!!")
+    //console.log("I am right!!")
     return true;
   }
-  console.log("I am wrong :(")
+  //console.log("I am wrong :(")
   return false;
 }
