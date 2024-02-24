@@ -128,36 +128,38 @@ export function GamesList() {
 
     return (
     <>
-    <p>
+    <p className="px-4">
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <strong>Game Registration</strong>
+        <h1 className="text-2xl font-semibold py-2">Game Registration</h1>
     </p>
   
 
     <div id="games"></div>
 
     
-
-    <form id="gameForm">
-        <input type="date" id="date" placeholder="Date Inputted from Calendar" /><br />
-        <input type="time" id="time" placeholder="Desired Time" /><br />
-        <input type="email" id="player2Email" placeholder ="Player 2 Email" /><br />
-        <input type='email' id='player3Email' placeholder ='Player 3 Email' /><br />
-        <input type='email' id='player4Email' placeholder ='Player 4 Email' /><br /> 
-        <input type='text' id='gameName' placeholder ='Game Name' /><br /> 
-        <h1 className="py-5">
-            <button  className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" onClick={registerGame}>Register Game</button>
+    <div className="px-4">  
+        <form id="gameForm">
+            <input type="date" id="date" placeholder="Date Inputted from Calendar" /> <br />
+            <input type="time" id="time" placeholder="Desired Time" /> <br />
+            <h2 className="text-slate-600">Player 1: {localStorage.getItem("email")}</h2>
+            <input type="email" id="player2Email" placeholder ="Player 2 Email" /> <br />
+            <input type='email' id='player3Email' placeholder ='Player 3 Email' /> <br />
+            <input type='email' id='player4Email' placeholder ='Player 4 Email' /> <br /> 
+            <input type='text' id='gameName' placeholder ='Game Name' /> <br /> 
+            <h1 className="py-5">
+                <button  className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" onClick={registerGame}>Register Game</button>
+            </h1> 
+            
+        </form>
+        <h1 className="py-7">
+                <button  className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" onClick={displayGames}>Click me to get games!</button>
         </h1> 
-        
-    </form>
-    <h1 className="py-7">
-            <button  className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" onClick={displayGames}>Click me to get games!</button>
-    </h1> 
-    <div id="myTable"></div>
-    <h1 className="py-6">
-            <button  className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" onClick={goBack}>Go Back</button>
-    </h1> 
+        <div id="myTable"></div>
+        <h1 className="py-6">
+                <button  className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" onClick={goBack}>Go Back</button>
+        </h1> 
+    </div>
     </>
     )
 
