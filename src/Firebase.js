@@ -245,7 +245,7 @@ export async function makeDoc(collectionName, fieldNames, fields) {
   for (let i = 0; i < fieldNames.length; i++) {
     docData[fieldNames[i]] = fields[i];
   }
-
+  
   try {
     // Reference to the collection
     const docRef = collection(db, collectionName);

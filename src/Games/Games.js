@@ -7,6 +7,15 @@ import { getAllEntriesFromCollection } from "../Firebase.js";
 import { getEntriesMatchingField } from "../Firebase.js";
 import { isFieldFilledInDoc } from "../Firebase.js";
 import { makeDoc } from "../Firebase.js";
+import { convertToDateTime, createDate } from "../Dates.js";
+import { initializeApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/firestore';
+import { Timestamp } from "firebase/firestore";
+
+
 export function GamesList() {
     const navigate = useNavigate();
     function goBack () {
@@ -32,24 +41,23 @@ export function GamesList() {
     }
 
     function storeGameIntoDB(date, time, playerEmails, gameName){
-        console.log(date)
-        console.log(time)
+        console.log(date + " " + typeof(date))
+        console.log(time + " " + typeof(time))
         console.log(playerEmails)
         console.log(gameName)
-        //storeFieldIntoDocument("Games", )
+        //const timestamp = firebase.firestore.Timestamp.fromDate(createDate(date, time))
+        //const timestamp = Timestamp.fromDate(createDate(date, time));
+        const timestamp = createDate(date, time);
+        console.log(timestamp)
+        const player2 = playerEmails[0];
+        const player3 = playerEmails[1];
+        const player4 = playerEmails[2];
+        const fieldNames = ["date", "gameName", "player1", "player2", "player3", "player4"]
+        const fieldEntries = [timestamp, gameName, localStorage.getItem("email"), player2, player3, player4]
+        console.log("about to store into document")
+        makeDoc("Games", fieldNames, fieldEntries)
     }
 
-    /*function displayGames(){
-        const allGamesPromise = getAllGames(localStorage.getItem("email"))
-        return allGamesPromise.then((allGames) => {
-            console.log(allGames);
-            const tableHTML = makeTable(allGames)
-            console.log(tableHTML)
-            return tableHTML
-        })
-        
-    }
-    */
     function displayGames() {
         getAllGames(localStorage.getItem("email")).then((allGames) => {
             const tableHTML = makeTable(allGames);
@@ -117,17 +125,6 @@ export function GamesList() {
     function makeHeader(){
         return "<tr><td>Game Name</td><td>Game Date</td><td>Game Players</td><td>Join</td></tr>"
     }
-
-    function convertToDateTime(seconds, nanoseconds) {
-        // Create a new Date object using the seconds (converted to milliseconds)
-        const date = new Date(seconds * 1000);
-      
-        // Add the nanoseconds (converted to milliseconds)
-        const milliseconds = nanoseconds / 1000000;
-        date.setMilliseconds(date.getMilliseconds() + milliseconds);
-      
-        return date;
-      }
 
     return (
     <>
