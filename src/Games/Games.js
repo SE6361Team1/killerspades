@@ -15,7 +15,6 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
 import { Timestamp } from "firebase/firestore";
 
-
 export function GamesList() {
     const navigate = useNavigate();
     function goBack () {
