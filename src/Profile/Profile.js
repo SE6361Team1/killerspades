@@ -45,7 +45,7 @@ export function Profile() {
             {localStorage.getItem("email")}
           </p>
           <h1 className="py-4">
-            <button  className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" onClick={handleLogOut}>Sign Out with Google</button>
+            <button  className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" onClick={handleLogOut}>Sign Out</button>
           </h1>
           <h1 className="py-5">
             <button  className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" onClick={goToGames}>Go to Games</button>

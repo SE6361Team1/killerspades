@@ -6,9 +6,13 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   signOut,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
 } from "firebase/auth";
 import { getFirestore, collection, getDocs, doc, getDoc, setDoc, where, addDoc } from 'firebase/firestore/lite';
 import {query} from "firebase/firestore"
+import firebase from 'firebase/app';
+import 'firebase/auth';
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -65,30 +69,34 @@ export const signInWithGoogle = () => {
     });
 };
 
+const auth = getAuth();
+
+export const signUpWithEmail = async (email, password) =>{
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    localStorage.setItem("name", "Blank");
+    localStorage.setItem("email", email);
+    console.log('User registered in successfully:', userCredential.user);
+    return userCredential
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export const loginWithEmail = async (email, password) =>{
+  try {
+    const userLoginCredential = await signInWithEmailAndPassword(auth, email, password);
+    localStorage.setItem("name", "Blank");
+    localStorage.setItem("email", email);
+    console.log('User logged in successfully:', userLoginCredential.user);
+    return userLoginCredential
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export const logInWithGoogle = () => {
   return signInWithGoogle();
-  /*
-  // signInWithPopup(authentication, googleProvider) is a promise
-  return signInWithPopup(authentication, googleProvider) 
-    .then((input) => {
-      // Get the display name and email of the user
-      const userName = input.user.displayName;
-      const userEmail = input.user.email;
-      // Store the user information
-      localStorage.setItem("name", userName);
-      localStorage.setItem("email", userEmail);
-      const haveUser = !doesUserExist(userEmail);
-      console.log("The value of haveUser is " + haveUser)
-      if(!haveUser){
-        addDoc(collection(db,"Users"), {name: userName, email: userEmail, TestString: "hello"})
-        console.log("user added to db")
-      }
-      // If there is an error with authentication, log it
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-    */
 };
 
 
