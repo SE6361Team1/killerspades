@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import io from "socket.io-client";
 
@@ -6,7 +6,7 @@ export const GameRoom = () => {
     const {roomId} = useParams();
     const socketRef = useRef(null);
     const inputRef = useRef(null);
-
+    
     useEffect(() => {
         socketRef.current = io('http://localhost:3001');
         if (roomId) {
@@ -35,9 +35,41 @@ export const GameRoom = () => {
         }
     };
 
+    // Below is the functionality for Player Ready Buttons.
+    function PlayerReady() {
+        const [counter, setCounter] = useState(1);
+    
+        const buttonClicked = () => {
+                setCounter(counter+1);
+                alert("Player is ready!");
+                if (counter == 4) {
+                    setCounter(1);
+                    alert("All players are ready!");
+                }
+        }
+            
+        return (
+            <div>
+            <div>
+                <button onClick={buttonClicked}>Player 1 Ready?</button>
+            </div>
+            <div>
+                <button onClick={buttonClicked}>Player 2 Ready?</button>
+            </div>
+            <div>
+                <button onClick={buttonClicked}>Player 3 Ready?</button>
+            </div>
+            <div>
+                <button onClick={buttonClicked}>Player 4 Ready?</button>
+            </div>
+            </div>
+        );
+    }
+
     return (
         <div>
         <div> Welcome to Game Room {roomId} </div>
+            {PlayerReady()}
             <div>
                 <form onSubmit={sendMessage}>
                     <input ref={inputRef} type="text" placeholder="Your message"></input>
@@ -48,3 +80,5 @@ export const GameRoom = () => {
         </div>
     );
 };
+
+// Player ready functionality
