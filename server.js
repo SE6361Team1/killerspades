@@ -57,9 +57,12 @@ io.on('connection', (socket) => {
     io.to(data.room).emit('message', `${socket.id.substring(0,5)}: ${data.text}`);
   });
 
+  // Count how many players are ready in a game room
   socket.on('playerReady', (roomId) =>{
+    // If a player clicks "Player Ready?", increment count of players that are ready
     roomPlayerCount[roomId] =  roomPlayerCount[roomId] + 1
     console.log(`User pressed button in ${roomId} roomPlayerCount[roomId] ${roomPlayerCount[roomId]}` );
+    // Once the number of ready players = 4, reset the counter and indicate that all players are ready
     if (roomPlayerCount[roomId] === 4){
       io.to(roomId).emit("allPlayersReady")
       roomPlayerCount[roomId] = 0

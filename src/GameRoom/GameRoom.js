@@ -41,9 +41,11 @@ export const GameRoom = () => {
         }
     };
 
-    //Client side button press
+    // Client/user side button press
     const buttonClicked = () =>{
+        // Indicate to server that another player is ready in the room
         socketRef.current.emit("playerReady", roomId)
+        // Player can no longer click the button again
         setIsButtonDisabled(true)
     }
 
