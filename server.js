@@ -14,6 +14,9 @@ const io = socketIo(server, {
   }
 });
 
+//Each room player counter
+const roomPlayerCount = {};
+
  // handle requests to server
 io.on('connection', (socket) => {
   console.log('A user connected');
@@ -41,13 +44,27 @@ io.on('connection', (socket) => {
     });
     console.log(Ids)
     io.to(socket.id).emit('message', `User/s in room: ${Ids.toString()}`);
+
+    // set/ initialize a counter if one does not exist for the room already 
+    if (!roomPlayerCount[roomId]){
+      roomPlayerCount[roomId] =0;
+    }
   });
 
   socket.on('chatMessage', (data) => {
     console.log(data.room)
     console.log(data.text);
     io.to(data.room).emit('message', `${socket.id.substring(0,5)}: ${data.text}`);
-});
+  });
+
+  socket.on('playerReady', (roomId) =>{
+    roomPlayerCount[roomId] =  roomPlayerCount[roomId] + 1
+    console.log(`User pressed button in ${roomId} roomPlayerCount[roomId] ${roomPlayerCount[roomId]}` );
+    if (roomPlayerCount[roomId] === 4){
+      io.to(roomId).emit("allPlayersReady")
+      roomPlayerCount[roomId] = 0
+    }
+  })
 
   socket.on('leaveRoom', (roomId) => {
     socket.leave(roomId);

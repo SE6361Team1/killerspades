@@ -6,6 +6,7 @@ export const GameRoom = () => {
     const {roomId} = useParams();
     const socketRef = useRef(null);
     const inputRef = useRef(null);
+    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
     
     useEffect(() => {
         socketRef.current = io('http://localhost:3001');
@@ -15,11 +16,16 @@ export const GameRoom = () => {
 
         // listen for messages, display in list
         socketRef.current.on("message", (data) => {
-            console.log(data);
+            console.log( data);
             const li = document.createElement('li');
             li.innerText = data;
             document.querySelector('ul').appendChild(li);
         });
+        
+        //listen for the all player ready server side message
+        socketRef.current.on("allPlayersReady", () =>{
+            alert("All Players are Ready!");
+        })
 
         return () => {
             socketRef.current.emit('leaveRoom', roomId);
@@ -35,41 +41,20 @@ export const GameRoom = () => {
         }
     };
 
-    // Below is the functionality for Player Ready Buttons.
-    function PlayerReady() {
-        const [counter, setCounter] = useState(1);
-    
-        const buttonClicked = () => {
-                setCounter(counter+1);
-                alert("Player is ready!");
-                if (counter == 4) {
-                    setCounter(1);
-                    alert("All players are ready!");
-                }
-        }
-            
-        return (
-            <div>
-            <div>
-                <button onClick={buttonClicked}>Player 1 Ready?</button>
-            </div>
-            <div>
-                <button onClick={buttonClicked}>Player 2 Ready?</button>
-            </div>
-            <div>
-                <button onClick={buttonClicked}>Player 3 Ready?</button>
-            </div>
-            <div>
-                <button onClick={buttonClicked}>Player 4 Ready?</button>
-            </div>
-            </div>
-        );
+    //Client side button press
+    const buttonClicked = () =>{
+        socketRef.current.emit("playerReady", roomId)
+        setIsButtonDisabled(true)
     }
 
     return (
         <div>
         <div> Welcome to Game Room {roomId} </div>
-            {PlayerReady()}
+            <div>
+                <div className="px-2 py-2 ">
+                    <button onClick={buttonClicked} disabled={isButtonDisabled} className={`px-3 py-2 text-medium bg-blue-500 text-white rounded ${isButtonDisabled ? 'bg-slate-400	cursor-not-allowed' : ''}`}>Player Ready?</button>
+                </div>
+            </div>
             <div>
                 <form onSubmit={sendMessage}>
                     <input ref={inputRef} type="text" placeholder="Your message"></input>
@@ -80,5 +65,3 @@ export const GameRoom = () => {
         </div>
     );
 };
-
-// Player ready functionality
