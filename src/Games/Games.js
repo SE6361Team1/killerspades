@@ -1,19 +1,10 @@
 import "./Games.css";
 import { useNavigate } from "react-router-dom";
-import { getDocument } from "../Firebase.js";
-import { storeAndRetrieveData } from "../Firebase.js";
-import { storeFieldIntoDocument } from "../Firebase.js";
 import { getAllEntriesFromCollection } from "../Firebase.js";
 import { getEntriesMatchingField } from "../Firebase.js";
-import { isFieldFilledInDoc } from "../Firebase.js";
 import { makeDoc } from "../Firebase.js";
 import { convertToDateTime, createDate } from "../Dates.js";
-import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
-import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
-import { Timestamp } from "firebase/firestore";
 
 export function GamesList() {
     const navigate = useNavigate();
@@ -115,14 +106,19 @@ export function GamesList() {
             + player2 + ", " 
             + player3 + ", " 
             + player4 + "</td>");
-            table += "<td></td>"
-            table += "</tr>\n"
+            table += "<td><button class='bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded' onclick='joinGame(" + i + ")'>Join Game</button></td>";
+            table += "</tr>\n";
         }
         table += "</table>"
         return table
     }
     function makeHeader(){
         return "<tr><td>Game Name</td><td>Game Date</td><td>Game Players</td><td>Join</td></tr>"
+    }
+    
+    window.joinGame = function (rowIndex){
+        // Your code to handle the join game action
+        console.log("Joining game at row: " + rowIndex);
     }
 
     return (
