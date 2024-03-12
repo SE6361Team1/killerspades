@@ -31,27 +31,27 @@ export function GamesList() {
     }
 
     function storeGameIntoDB(date, time, playerEmails, gameName){
-        console.log(date + " " + typeof(date))
-        console.log(time + " " + typeof(time))
-        console.log(playerEmails)
-        console.log(gameName)
+        //console.log(date + " " + typeof(date))
+        //console.log(time + " " + typeof(time))
+        //console.log(playerEmails)
+        //console.log(gameName)
         //const timestamp = firebase.firestore.Timestamp.fromDate(createDate(date, time))
         //const timestamp = Timestamp.fromDate(createDate(date, time));
         const timestamp = createDate(date, time);
-        console.log(timestamp)
+        //console.log(timestamp)
         const player2 = playerEmails[0];
         const player3 = playerEmails[1];
         const player4 = playerEmails[2];
         const fieldNames = ["date", "gameName", "player1", "player2", "player3", "player4"]
         const fieldEntries = [timestamp, gameName, localStorage.getItem("email"), player2, player3, player4]
-        console.log("about to store into document")
+        //console.log("about to store into document")
         makeDoc("Games", fieldNames, fieldEntries)
     }
 
     function displayGames() {
         getAllGames(localStorage.getItem("email")).then((allGames) => {
             const tableHTML = makeTable(allGames);
-            console.log("This is the tableHTML")
+            //console.log("This is the tableHTML")
             document.getElementById('myTable').innerHTML = tableHTML;
         });
     }
@@ -71,19 +71,12 @@ export function GamesList() {
     function combineArrays(gamesCollection){
         //we make a set (a data type that doesnt accept duplicates)
         const gameSet = new Set();
-        console.log("I am inside the combineArrays Method")
-        console.log(gamesCollection)
-        console.log(gamesCollection.length)
         for (let i = 0; i < gamesCollection.length; i++){
             const row = gamesCollection[i];
-            console.log("This is the row")
-            console.log(row)
             for(let j = 0; j< gamesCollection[i].length; j++){
                 gameSet.add(gamesCollection[i][j]);
             }
         }
-        console.log("Set of all the games: ")
-        console.log(gameSet)
         return gameSet;
     }
 
@@ -92,7 +85,7 @@ export function GamesList() {
         let table = "<table>";
         table += "\n" + makeHeader() + "\n";
         for (let i = 0; i < gameArray.length; i ++){
-            const game = gameArray[i];
+            const game = gameArray[i].data;
             const gameName = game.gameName;
             const gameDate = convertToDateTime(game.date.seconds, game.date.nanoseconds);
             const player1 = game.player1;
@@ -119,6 +112,10 @@ export function GamesList() {
     window.joinGame = function (rowIndex){
         // Your code to handle the join game action
         console.log("Joining game at row: " + rowIndex);
+        getAllGames(localStorage.getItem("email")).then((allGames) => {
+            console.log(allGames)
+            console.log(typeof(allGames))
+        });
     }
 
     return (

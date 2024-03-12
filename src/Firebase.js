@@ -223,7 +223,7 @@ export async function getEntriesMatchingField(querySnapshot, fieldName, desiredD
       const docData = doc.data();
       const isRight = await isFieldFilledInDoc(docData, fieldName, desiredData);
       if(isRight){
-          docArray.push(docData);
+        docArray.push({ data: docData, ref: doc.ref });
       }
   }
   return docArray;
@@ -231,9 +231,9 @@ export async function getEntriesMatchingField(querySnapshot, fieldName, desiredD
 
 
 export async function isFieldFilledInDoc(docData, fieldName, desiredData){
-  console.log("Field Name: " + fieldName 
+  /*console.log("Field Name: " + fieldName 
   + ", data there: " + docData[fieldName] 
-  + ", desired data: " + desiredData)
+  + ", desired data: " + desiredData)*/
   if(docData[fieldName] == desiredData) {
     //console.log("I am right!!")
     return true;
