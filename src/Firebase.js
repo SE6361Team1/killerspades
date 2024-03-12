@@ -9,7 +9,7 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
-import { getFirestore, collection, getDocs, doc, getDoc, setDoc, where, addDoc } from 'firebase/firestore/lite';
+import { getFirestore, collection, getDocs, doc, getDoc, setDoc, where, addDoc, updateDoc} from 'firebase/firestore/lite';
 import {query} from "firebase/firestore"
 import firebase from 'firebase/app';
 import 'firebase/auth';
@@ -245,7 +245,9 @@ export async function isFieldFilledInDoc(docData, fieldName, desiredData){
 export async function isFieldThere(docData, fieldName) {
   // Check if the field exists and has a value
   const fieldValue = docData[fieldName];
-  return fieldValue !== undefined && fieldValue !== null;
+  console.log("this is the fieldvalue: " + fieldValue)
+  const returnVal = fieldValue !== undefined && fieldValue !== null
+  return returnVal;
 }
 
 export async function updateDocField(docRef, field, value){

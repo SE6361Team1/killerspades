@@ -9,6 +9,9 @@ import { updateDocField } from "../Firebase.js";
 import io from "socket.io-client";
 import 'firebase/compat/firestore';
 const socket = io('http://localhost:3001');
+
+
+
 export function GamesList() {
     const navigate = useNavigate();
     function goBack () {
@@ -122,12 +125,29 @@ export function GamesList() {
             const gameRef = game.ref
             console.log(game)
             console.log(gameRef)
-            if(isFieldThere(game.data, "gameCode")){
-
-            }
-            else{
-                updateDocField(gameRef, "gameCode")
-            }
+            isFieldThere(game.data, "gameCode").then((fieldBoolean) =>{
+                if(fieldBoolean){
+                    console.log("Field is there")
+                    const gameCode = game.data.gameCode;
+                    console.log("Gamecode is: " + gameCode)
+                    console.log("And now I'm printing the array")
+                    navigate("/GameRoom/" + gameCode)
+                }
+                else{
+                    /*socket.current.emit('Generate Room');
+                    socket.current.on('newRoomLink', (roomLink) => {
+                    // Extract the game code from the room link
+                    const gameCode = roomLink.split('/').pop();
+                    */
+                    const gameCode = Math.random().toString(36).substring(2, 7);
+                    // Update the document with the new game code
+                    updateDocField(gameRef, "gameCode", gameCode);
+                    navigate("/GameRoom/" + gameCode)
+                                   
+                    
+                }
+            })
+            
         });
     }
 
