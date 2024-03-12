@@ -2,10 +2,13 @@ import "./Games.css";
 import { useNavigate } from "react-router-dom";
 import { getAllEntriesFromCollection } from "../Firebase.js";
 import { getEntriesMatchingField } from "../Firebase.js";
+import { isFieldThere } from "../Firebase.js";
 import { makeDoc } from "../Firebase.js";
 import { convertToDateTime, createDate } from "../Dates.js";
+import { updateDocField } from "../Firebase.js";
+import io from "socket.io-client";
 import 'firebase/compat/firestore';
-
+const socket = io('http://localhost:3001');
 export function GamesList() {
     const navigate = useNavigate();
     function goBack () {
@@ -113,8 +116,18 @@ export function GamesList() {
         // Your code to handle the join game action
         console.log("Joining game at row: " + rowIndex);
         getAllGames(localStorage.getItem("email")).then((allGames) => {
-            console.log(allGames)
-            console.log(typeof(allGames))
+            const gameArray = Array.from(allGames);
+            console.log(gameArray)
+            const game = gameArray[rowIndex]
+            const gameRef = game.ref
+            console.log(game)
+            console.log(gameRef)
+            if(isFieldThere(game.data, "gameCode")){
+
+            }
+            else{
+                updateDocField(gameRef, "gameCode")
+            }
         });
     }
 

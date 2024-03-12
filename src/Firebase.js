@@ -242,6 +242,19 @@ export async function isFieldFilledInDoc(docData, fieldName, desiredData){
   return false;
 }
 
+export async function isFieldThere(docData, fieldName) {
+  // Check if the field exists and has a value
+  const fieldValue = docData[fieldName];
+  return fieldValue !== undefined && fieldValue !== null;
+}
+
+export async function updateDocField(docRef, field, value){
+  await updateDoc(docRef, {
+    [field]: value
+  });
+}
+
+
 export async function makeDoc(collectionName, fieldNames, fields) {
   // Ensure the arrays have the same length
   if (fieldNames.length !== fields.length) {
