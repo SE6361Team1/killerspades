@@ -47,18 +47,18 @@ export function Home() {
       });
   }
 
-  useEffect(() => {
-    socket.on('newRoomLink', (roomLink) => {
-      console.log('new link:', roomLink);
-    });
-    return () => {
-      socket.off('newRoomLink');
-    };
-  }, []);
+  // useEffect(() => {
+  //   socket.on('newRoomLink', (roomLink) => {
+  //     console.log('new link:', roomLink);
+  //   });
+  //   return () => {
+  //     socket.off('newRoomLink');
+  //   };
+  // }, []);
 
-  function generateRoom() {
-    socket.emit('Generate Room');
-  }
+  // function generateRoom() {
+  //   socket.emit('Generate Room');
+  // }
 
 
   function handleGoogleLogIn(){
@@ -119,7 +119,6 @@ export function Home() {
           </div>
         </div>
       </div>
-      <button id="linkTest" onClick={generateRoom}>Click me!</button>
     </div>
   );
 }

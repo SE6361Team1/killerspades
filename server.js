@@ -21,13 +21,7 @@ const roomPlayerCount = {};
 io.on('connection', (socket) => {
   console.log('A user connected');
 
-  socket.on('Generate Room', () => {
-    const roomId = Math.random().toString(36).substring(2, 7);
-    const roomLink = `http://localhost:3000/GameRoom/${roomId}`;
-    socket.emit('newRoomLink', roomLink);
-
-    // proof of concept
-    const email = 'arjurek1029@gmail.com';
+  socket.on('sendEmail', (email) => {
     const link = 'http://localhost:3000'
     sendEmail(email, link);
   });

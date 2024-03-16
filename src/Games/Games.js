@@ -8,6 +8,7 @@ import { convertToDateTime, createDate } from "../Dates.js";
 import { updateDocField } from "../Firebase.js";
 import io from "socket.io-client";
 import 'firebase/compat/firestore';
+
 const socket = io('http://localhost:3001');
 
 
@@ -19,7 +20,8 @@ export function GamesList() {
         navigate("/Profile");
     }
 
-    function registerGame() {
+    function registerGame(event) {
+        event.preventDefault();
         const date = document.getElementById('date').value;
         const time = document.getElementById('time').value;
         const player2Email = document.getElementById('player2Email').value;
@@ -30,6 +32,7 @@ export function GamesList() {
         if(date && time && player2Email && player3Email && player4Email && gameName) {
             const playerEmails = [player2Email, player3Email, player4Email];
             storeGameIntoDB(date, time, playerEmails, gameName)
+            playerEmails.forEach(email => socket.emit('sendEmail', email));
             console.log("Game registered!");
         } else {
             alert("Please fill all fields before registering.");
