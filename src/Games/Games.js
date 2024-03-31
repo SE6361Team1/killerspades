@@ -21,7 +21,7 @@ export function GamesList() {
     }
 
     function registerGame(event) {
-        event.preventDefault();
+        //event.preventDefault();
         const date = document.getElementById('date').value;
         const time = document.getElementById('time').value;
         const player2Email = document.getElementById('player2Email').value;
