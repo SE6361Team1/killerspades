@@ -9,8 +9,10 @@ import { updateDocField } from "../Firebase.js";
 import io from "socket.io-client";
 import 'firebase/compat/firestore';
 
-const socket = io('http://localhost:3001');
-
+//const socket = io('http://localhost:3001');
+const socket = io(window.location.origin.replace(/^http/, 'ws'));
+console.log("Socket" + socket)
+console.log("Socket (again) " + window.location.origin.replace(/^http/, 'ws'))
 
 
 export function GamesList() {

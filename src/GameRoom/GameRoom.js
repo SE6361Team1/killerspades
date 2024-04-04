@@ -14,7 +14,14 @@ export const GameRoom = () => {
 
     
     useEffect(() => {
-        socketRef.current = io('http://localhost:3001');
+        //socketRef.current = io('http://localhost:3001');
+        const windowIP = window.location.origin;
+        const windowMinusPort = windowIP.slice(0,-4);
+        const windowAndNewPort = windowMinusPort + "3001"
+        socketRef.current = io(windowAndNewPort);
+        console.log("Socket" + socketRef)
+        console.log("Socket (again) " + windowAndNewPort)
+
         if (roomId) {
             socketRef.current.emit('joinRoom', roomId);
         }
