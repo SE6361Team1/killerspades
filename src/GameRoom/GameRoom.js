@@ -8,11 +8,9 @@ export const GameRoom = () => {
     const inputRef = useRef(null);
     const [isButtonDisabled, setIsButtonDisabled] = useState(false);
     const [allPlayersReady, setAllPlayersReady] = useState(false); 
-    const [players, setPlayers] = useState([]); 
-    const [playerUsernames, setPlayerUsernames] = useState([])
+    const [dealer, setDealer] = useState(null);
 
 
-    
     useEffect(() => {
         //socketRef.current = io('http://localhost:3001');
         const windowIP = window.location.origin;
@@ -56,10 +54,16 @@ export const GameRoom = () => {
                 console.log(player);
             });
         });
+        socketRef.current.on("dealerChosen", (selectedDealer) => {
+            console.log("Dealer: ")
+            console.log(selectedDealer);
+            setDealer(selectedDealer);
+        });
         
         //Clean up cardData listener
         return () => {
             socketRef.current.off("cardData");
+            socketRef.current.off("dealerChosen");
         };
     }, [])
 
@@ -79,13 +83,15 @@ export const GameRoom = () => {
         setIsButtonDisabled(true)
     }
 
-
     return (
         <div>
         <div> Welcome to Game Room {roomId} </div>
         {allPlayersReady ? (
                 <div>
-                  Look at console
+                  Look at console for dealt cards
+                  <div>
+                    Selected dealer is: {dealer}
+                  </div>
                 </div>
             ) : (
                 <div>
