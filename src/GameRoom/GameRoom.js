@@ -123,25 +123,6 @@ export const GameRoom = () => {
         return output;
     }
 
-    function makeTable(arrayOfCards){
-        console.log("Array of cards")
-        console.log(arrayOfCards);
-        let table = "<table>";
-        table += "\n" + makeHeader() + "\n";
-        for (let i = 0; i < arrayOfCards.length; i ++){
-            //console.log("I'm in the loop " + i)
-            const card = arrayOfCards[i];
-            table += "<tr>\n"
-            table += "<td>" + card + "</td>"
-            table += "</tr>\n";
-        }
-        table += "</table>"
-        return table
-    }
-    function makeHeader(){
-        return "<tr><td>Card</td></tr>"
-    }
-
     return (
         <div>
         <div> Welcome to Game Room {roomId} </div>
