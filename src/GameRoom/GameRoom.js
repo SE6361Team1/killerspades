@@ -12,8 +12,10 @@ export const GameRoom = () => {
     const [dealer, setDealer] = useState(null);
     var username = "";
     const [myCards, setMyCards] = useState([]);
+    const [myUsername, setMyUsername] = useState([]);
     var allCards = {};
 
+    // Messaging in chat
     useEffect(() => {
         //socketRef.current = io('http://localhost:3001');
         const windowIP = window.location.origin;
@@ -56,32 +58,45 @@ export const GameRoom = () => {
 
     //show the dealed cards on the console with each username associated with it 
     useEffect(() =>{
+        // Display cards for each player in console log
         socketRef.current.on("cardData", (playersWithCards) => {
             console.log("Cards with each player: ")
             allCards = playersWithCards;
             playersWithCards.forEach(player => {
                 console.log(player);
                 if (player.username == username){
+                    setMyUsername(username)
                     setMyCards(player.cards);
-                    console.log("myCards");
-                    console.log(myCards);
+                    //console.log("myCards");
+                    //console.log(myCards);
                 }
             });
             
         });
-        socketRef.current.on("dealerChosen", (selectedDealer) => {
-            console.log("Dealer: ")
-            console.log(selectedDealer);
-            setDealer(selectedDealer);
-        });
         
-        //Clean up cardData listener
+        //Clean up cardData and dealerChosen listener
         return () => {
             socketRef.current.off("cardData");
             socketRef.current.off("dealerChosen");
         };
     }, [])
 
+    // Dealer
+    useEffect(() => {
+        // Display dealer in console log
+        socketRef.current.on("dealerChosen", (selectedDealer) => {
+            console.log("Dealer: ")
+            console.log(selectedDealer);
+            setDealer(selectedDealer);
+        });
+
+        // Clean up listener
+        return () => {
+            socketRef.current.off("dealerChosen");
+        };
+    },[]);
+
+    // Send message to all in room
     const sendMessage = (e) => {
         e.preventDefault();
         if (inputRef.current && inputRef.current.value) {
@@ -98,6 +113,7 @@ export const GameRoom = () => {
         setIsButtonDisabled(true)
     }
 
+    // Display current user's card on page
     const displayCards = (arrayOfCards) =>{
         //return makeTable(arrayOfCards); 
         let output = "";
@@ -131,9 +147,9 @@ export const GameRoom = () => {
         <div> Welcome to Game Room {roomId} </div>
         {allPlayersReady ? (
                 <div>
-                  Look at console for dealt cards
+                    My username is: {myUsername}
                   <div>
-                    Selected dealer is: {dealer}
+                    Current dealer is: {dealer}
                   </div>
                 <div>
                 <form onSubmit={sendMessage}>
@@ -141,6 +157,9 @@ export const GameRoom = () => {
                     <button type="submit">Send</button>
                 </form>
                 <ul></ul>
+                <div>
+                   <strong>My Hand</strong> 
+                </div>
                 <div>
                     {displayCards(myCards)}
                 </div>
