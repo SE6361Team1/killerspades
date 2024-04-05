@@ -9,7 +9,7 @@ export const GameRoom = () => {
     const [isButtonDisabled, setIsButtonDisabled] = useState(false);
     const [allPlayersReady, setAllPlayersReady] = useState(false); 
     const [dealer, setDealer] = useState(null);
-
+    var username = "";
 
     useEffect(() => {
         //socketRef.current = io('http://localhost:3001');
@@ -38,6 +38,11 @@ export const GameRoom = () => {
             setAllPlayersReady(true);
         })
 
+        //listen for the username and then print it to the console and set the variable
+        socketRef.current.on("username", (messageData) => {
+            console.log(messageData)
+            username = messageData;
+        })
 
         return () => {
             socketRef.current.emit('leaveRoom', roomId);
@@ -92,7 +97,14 @@ export const GameRoom = () => {
                   <div>
                     Selected dealer is: {dealer}
                   </div>
-                </div>
+                <div>
+                <form onSubmit={sendMessage}>
+                    <input ref={inputRef} type="text" placeholder="Your message"></input>
+                    <button type="submit">Send</button>
+                </form>
+                <ul></ul>
+            </div>
+            </div>
             ) : (
                 <div>
                     <div>

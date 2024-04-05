@@ -40,7 +40,7 @@ io.on('connection', (socket) => {
     });
     console.log( Ids)
     io.to(socket.id).emit('message', `User/s in room: ${Ids.toString()}`);
-
+    io.to(socket.id).emit('username', socket.id.substring(0,5));
     roomPlayerIds[roomId] = Ids;
     // set/ initialize a counter if one does not exist for the room already 
     if (!roomPlayerCount[roomId]){

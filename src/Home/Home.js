@@ -2,10 +2,10 @@ import { signInWithGoogle, logInWithGoogle, signUpWithEmail, loginWithEmail } fr
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useEffect } from 'react';
-import io from "socket.io-client";
+//import io from "socket.io-client";
 //import backgroundI from '../Assets/bgImage.png';
 
-const socket = io('http://localhost:3001');
+//const socket = io('http://localhost:3001');
 
 export function Home() {
   const navigate = useNavigate();
