@@ -125,25 +125,27 @@ export const GameRoom = () => {
 
     return (
         <div>
-        <div> Welcome to Game Room {roomId} </div>
+        <div className="px-2 py-2"> Welcome to Game Room {roomId} </div>
         {allPlayersReady ? (
-                <div>
+            <div className="px-2 py -2">
+            <div>
                     My username is: {myUsername}
                   <div>
                     Current dealer is: {dealer}
                   </div>
-                <div>
-                <form onSubmit={sendMessage}>
-                    <input ref={inputRef} type="text" placeholder="Your message"></input>
-                    <button type="submit">Send</button>
-                </form>
-                <ul></ul>
+            <div>
+                    <form onSubmit={sendMessage}>
+                        <input ref={inputRef} type="text" placeholder="Your message"></input>
+                        <button type="submit">Send</button>
+                    </form>
+                    <ul></ul>
                 <div>
                    <strong>My Hand</strong> 
                 </div>
                 <div>
                     {displayCards(myCards)}
                 </div>
+            </div>
             </div>
             </div>
             ) : (
