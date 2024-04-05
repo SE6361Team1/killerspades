@@ -110,7 +110,8 @@ io.on('connection', (socket) => {
       io.to(roomId).emit('dealerChosen', dealer);
     };
 
-  // Count how many players are ready in a game room
+  /** 
+    // Count how many players are ready in a game room
   socket.on('playerReady', (roomId) =>{
     const playerUniqueIds = roomPlayerIds[roomId];
     // If a player clicks "Player Ready?", increment count of players that are ready
@@ -124,6 +125,25 @@ io.on('connection', (socket) => {
       // Select the dealer for the game
       selectDealer(roomId, playerUniqueIds);
       roomPlayerCount[roomId] = 0
+    }
+  })
+  */
+  // Count how many players are ready in a game room
+  socket.on('playerReady', (roomId) =>{
+    const playerUniqueIds = roomPlayerIds[roomId];
+    // If a player clicks "Player Ready?", increment count of players that are ready
+    roomPlayerCount[roomId] =  roomPlayerCount[roomId] + 1
+    console.log(`User pressed button in ${roomId} roomPlayerCount[roomId] ${roomPlayerCount[roomId]}` );
+    // Once the number of ready players = 4, reset the counter and indicate that all players are ready
+    if (roomPlayerCount[roomId] === 4){
+      dealCards(roomId, playerUniqueIds);
+      // Select the dealer for the game
+      selectDealer(roomId, playerUniqueIds);
+      roomPlayerCount[roomId] = 0
+      
+      io.to(roomId).emit("allPlayersReady")
+      // Deal all the cards in the deck
+      
     }
   })
 

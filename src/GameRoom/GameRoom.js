@@ -1,3 +1,4 @@
+import "./GameRoom.css"
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import io from "socket.io-client";
@@ -10,6 +11,8 @@ export const GameRoom = () => {
     const [allPlayersReady, setAllPlayersReady] = useState(false); 
     const [dealer, setDealer] = useState(null);
     var username = "";
+    const [myCards, setMyCards] = useState([]);
+    var allCards = {};
 
     useEffect(() => {
         //socketRef.current = io('http://localhost:3001');
@@ -55,9 +58,16 @@ export const GameRoom = () => {
     useEffect(() =>{
         socketRef.current.on("cardData", (playersWithCards) => {
             console.log("Cards with each player: ")
+            allCards = playersWithCards;
             playersWithCards.forEach(player => {
                 console.log(player);
+                if (player.username == username){
+                    setMyCards(player.cards);
+                    console.log("myCards");
+                    console.log(myCards);
+                }
             });
+            
         });
         socketRef.current.on("dealerChosen", (selectedDealer) => {
             console.log("Dealer: ")
@@ -88,6 +98,34 @@ export const GameRoom = () => {
         setIsButtonDisabled(true)
     }
 
+    const displayCards = (arrayOfCards) =>{
+        //return makeTable(arrayOfCards); 
+        let output = "";
+        for (let i = 0; i < arrayOfCards.length; i++){
+            output += arrayOfCards[i] + ", "
+        }
+        return output;
+    }
+
+    function makeTable(arrayOfCards){
+        console.log("Array of cards")
+        console.log(arrayOfCards);
+        let table = "<table>";
+        table += "\n" + makeHeader() + "\n";
+        for (let i = 0; i < arrayOfCards.length; i ++){
+            //console.log("I'm in the loop " + i)
+            const card = arrayOfCards[i];
+            table += "<tr>\n"
+            table += "<td>" + card + "</td>"
+            table += "</tr>\n";
+        }
+        table += "</table>"
+        return table
+    }
+    function makeHeader(){
+        return "<tr><td>Card</td></tr>"
+    }
+
     return (
         <div>
         <div> Welcome to Game Room {roomId} </div>
@@ -103,6 +141,9 @@ export const GameRoom = () => {
                     <button type="submit">Send</button>
                 </form>
                 <ul></ul>
+                <div>
+                    {displayCards(myCards)}
+                </div>
             </div>
             </div>
             ) : (
