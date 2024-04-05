@@ -19,6 +19,9 @@ const roomPlayerCount = {};
 
 //Get the id of each player in the rooms
 const roomPlayerIds = {};
+
+const roomBids = {};
+
  // handle requests to server
 io.on('connection', (socket) => {
   console.log('A user connected');
@@ -56,6 +59,18 @@ io.on('connection', (socket) => {
     io.to(data.room).emit('message', `${socket.id.substring(0,5)}: ${data.text}`);
   });
 
+  socket.on('submitBid', ({ roomId, bid }) => {
+    const bidData = { username: socket.id.substring(0,5), bid };
+    if (!roomBids[roomId]) {
+      roomBids[roomId] = [];
+    }
+    roomBids[roomId].push(bidData);
+    io.in(roomId).emit('bidUpdate', roomBids[roomId]);
+
+    //
+    // rotate turn for bid
+    //
+  });
 
   //deal the cards on the server
   //create the deck of cards

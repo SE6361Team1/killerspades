@@ -7,6 +7,7 @@ export const GameRoom = () => {
     const {roomId} = useParams();
     const socketRef = useRef(null);
     const inputRef = useRef(null);
+    const bidInputRef = useRef(null);
     const [isButtonDisabled, setIsButtonDisabled] = useState(false);
     const [allPlayersReady, setAllPlayersReady] = useState(false); 
     const [dealer, setDealer] = useState(null);
@@ -14,6 +15,7 @@ export const GameRoom = () => {
     const [myCards, setMyCards] = useState([]);
     const [myUsername, setMyUsername] = useState([]);
     var allCards = {};
+    const [bids, setBids] = useState([]);
 
     // Messaging in chat
     useEffect(() => {
@@ -48,6 +50,14 @@ export const GameRoom = () => {
             console.log(messageData)
             username = messageData;
         })
+
+        socketRef.current.on('bidUpdate', (updatedBids) => {
+            setBids(updatedBids);
+        });
+
+        //
+        // player bid turn rotation
+        //
 
         return () => {
             socketRef.current.emit('leaveRoom', roomId);
@@ -123,6 +133,20 @@ export const GameRoom = () => {
         return output;
     }
 
+    const submitBid = (bid) => {
+        socketRef.current.emit('submitBid', { bid, roomId });
+      };
+    
+    const bidSubmissionUI = (
+        <div>
+          <input type="number" ref={bidInputRef} placeholder="Your bid" />
+          <button onClick={() => submitBid(bidInputRef.current.value)}>Submit Bid</button>
+        </div>
+      );
+    const bidDisplay = bids.map((bid, index) => (
+        <div key={index}>{bid.username}: {bid.bid}</div>
+      ));
+
     return (
         <div>
         <div className="px-2 py-2"> Welcome to Game Room {roomId} </div>
@@ -145,6 +169,9 @@ export const GameRoom = () => {
                 <div>
                     {displayCards(myCards)}
                 </div>
+                {bidSubmissionUI}
+                <div>Bids:</div>
+                {bidDisplay}
             </div>
             </div>
             </div>
