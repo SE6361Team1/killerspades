@@ -138,9 +138,9 @@ export const GameRoom = () => {
       };
     
     const bidSubmissionUI = (
-        <div>
+        <div className="py-3">
           <input type="number" ref={bidInputRef} placeholder="Your bid" />
-          <button onClick={() => submitBid(bidInputRef.current.value)}>Submit Bid</button>
+          <button className= "px-3 py-2 text-sm bg-blue-500 text-white rounded" onClick={() => submitBid(bidInputRef.current.value)}>Submit Bid</button>
         </div>
       );
     const bidDisplay = bids.map((bid, index) => (
@@ -160,7 +160,7 @@ export const GameRoom = () => {
             <div>
                     <form onSubmit={sendMessage}>
                         <input ref={inputRef} type="text" placeholder="Your message"></input>
-                        <button type="submit">Send</button>
+                        <button className= "px-3 py-2 text-sm bg-blue-500 text-white rounded" type="submit">Send</button>
                     </form>
                     <ul></ul>
                 <div>
@@ -170,7 +170,7 @@ export const GameRoom = () => {
                     {displayCards(myCards)}
                 </div>
                 {bidSubmissionUI}
-                <div>Bids:</div>
+                <div >Bids:</div>
                 {bidDisplay}
             </div>
             </div>
@@ -185,7 +185,7 @@ export const GameRoom = () => {
                     <div>
                         <form onSubmit={sendMessage}>
                             <input ref={inputRef} type="text" placeholder="Your message"></input>
-                            <button type="submit">Send</button>
+                            <button className= "px-3 py-2 text-sm bg-blue-500 text-white rounded" type="submit">Send</button>
                         </form>
                         <ul></ul>
                     </div>
