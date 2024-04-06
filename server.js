@@ -19,8 +19,9 @@ const roomPlayerCount = {};
 
 //Get the id of each player in the rooms
 const roomPlayerIds = {};
-
+const roomPlayerIdsLong = {};
 const roomBids = {};
+const rooms = {};
 
  // handle requests to server
 io.on('connection', (socket) => {
@@ -38,17 +39,28 @@ io.on('connection', (socket) => {
     socket.to(roomId).emit('message', `User ${socket.id.substring(0, 5)} has joined the room.`);
     const connections = await io.in(roomId).fetchSockets();
     var Ids = [];
+    var longIds = [];
     connections.forEach(function (connection) {
         Ids.push(connection.id.substring(0,5));
+        longIds.push(connection.id);
     });
     console.log( Ids)
     io.to(socket.id).emit('message', `User/s in room: ${Ids.toString()}`);
     io.to(socket.id).emit('username', socket.id.substring(0,5));
     roomPlayerIds[roomId] = Ids;
+    roomPlayerIdsLong[roomId] = longIds;
     // set/ initialize a counter if one does not exist for the room already 
     if (!roomPlayerCount[roomId]){
       roomPlayerCount[roomId] = 0;
     }
+    if (!rooms[roomId]) {
+      rooms[roomId] = {
+          playerIds: [],
+          bidOrder: [],
+          currentBidderIndex: 0,
+      };
+  }
+  rooms[roomId].playerIds.push(socket.id);
 
     //io.to(socket.id).emit('playerIds', Ids);
   });
@@ -60,17 +72,17 @@ io.on('connection', (socket) => {
   });
 
   socket.on('submitBid', ({ roomId, bid }) => {
-    const bidData = { username: socket.id.substring(0,5), bid };
-    if (!roomBids[roomId]) {
-      roomBids[roomId] = [];
-    }
-    roomBids[roomId].push(bidData);
-    io.in(roomId).emit('bidUpdate', roomBids[roomId]);
-
-    //
-    // rotate turn for bid
-    //
-  });
+      const bidData = { username: socket.id.substring(0,5), bid };
+      if (!roomBids[roomId]) {
+        roomBids[roomId] = [];
+      }
+      roomBids[roomId].push(bidData);
+      rooms[roomId].currentBidderIndex = (rooms[roomId].currentBidderIndex + 1) % rooms[roomId].bidOrder.length;
+      const nextBidderId = rooms[roomId].bidOrder[rooms[roomId].currentBidderIndex];
+      io.to(nextBidderId).emit('bidTurn');
+      console.log(roomBids[roomId]);
+      io.to(roomId).emit('bidUpdate',roomBids[roomId]);
+     });
 
   //deal the cards on the server
   //create the deck of cards
@@ -120,9 +132,23 @@ io.on('connection', (socket) => {
       // Generate a random number from 0 to 3
       const random = Math.floor(Math.random() * 4);
       // Set that index in the playerId array to be the dealer
-      const dealer = playerIds[random]
+      const dealer = playerIds[random];
+      const dealerLong = roomPlayerIdsLong[roomId][random];
+      console.log("dealer id:", dealerLong);
       console.log(dealer)
+      
+
+      const playerOrder = roomPlayerIdsLong[roomId];
+      console.log("player order:", playerOrder);
+      const dealerIndex = playerOrder.indexOf(dealerLong);
+      console.log("dealer index:", dealerIndex)
+      const bidOrder = playerOrder.slice(dealerIndex + 1).concat(playerOrder.slice(0, dealerIndex+1));
+      let currentBidderIndex = 0;
+      rooms[roomId].bidOrder = bidOrder;
+      rooms[roomId].currentBidderIndex = currentBidderIndex;
       io.to(roomId).emit('dealerChosen', dealer);
+      console.log("bid order:", bidOrder)
+      io.to(bidOrder[0]).emit('bidTurn');
     };
 
   /** 

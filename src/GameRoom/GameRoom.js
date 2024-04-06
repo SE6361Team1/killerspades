@@ -16,6 +16,7 @@ export const GameRoom = () => {
     const [myUsername, setMyUsername] = useState([]);
     var allCards = {};
     const [bids, setBids] = useState([]);
+    const [myTurnToBid, setMyTurnToBid] = useState(false);
 
     // Messaging in chat
     useEffect(() => {
@@ -55,9 +56,10 @@ export const GameRoom = () => {
             setBids(updatedBids);
         });
 
-        //
-        // player bid turn rotation
-        //
+        socketRef.current.on('bidTurn', () => {
+            console.log("my turn to bid");
+            setMyTurnToBid(true);
+        });
 
         return () => {
             socketRef.current.emit('leaveRoom', roomId);
@@ -98,6 +100,7 @@ export const GameRoom = () => {
             console.log("Dealer: ")
             console.log(selectedDealer);
             setDealer(selectedDealer);
+        
         });
 
         // Clean up listener
@@ -135,14 +138,16 @@ export const GameRoom = () => {
 
     const submitBid = (bid) => {
         socketRef.current.emit('submitBid', { bid, roomId });
+        
       };
     
-    const bidSubmissionUI = (
-        <div className="py-3">
+    const bidSubmissionUI = myTurnToBid ? (
+            <div className="py-3">
           <input type="number" ref={bidInputRef} placeholder="Your bid" />
           <button className= "px-3 py-2 text-sm bg-blue-500 text-white rounded" onClick={() => submitBid(bidInputRef.current.value)}>Submit Bid</button>
         </div>
-      );
+      ): null;
+
     const bidDisplay = bids.map((bid, index) => (
         <div key={index}>{bid.username}: {bid.bid}</div>
       ));
